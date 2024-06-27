@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<int> lpsfill(int m,vector<int> &p){
+        vector<int> lps(m);
+        lps[0]=0;
+        for(int i=1;i<m;i++){
+            int j=lps[i-1];
+            while(j>0 && p[j]!=p[i]){
+                j=lps[j-1];
+            }
+            if(p[j]==p[i]){
+                j++;
+            }
+            lps[i]=j;
+        }
+        return lps;
+    }
+    int countMatchingSubarrays(vector<int>& nums, vector<int>& p) {
+        int n=nums.size(),m=p.size();
+        if(m==0)return 0;
+        vector<int> lps=lpsfill(m,p);
+        int i=0,j=0,ans=0;
+        while(i<n-1){
+            int s=nums[i+1]-nums[i];
+            if(s>0)s=1;
+            if(s<0)s=-1;
+            if(s==p[j]){
+                i++;j++;
+            }else{
+                if(j==0)i++;
+                else j=lps[j-1];
+            }
+            if(j==m){
+                ans++;
+                j=lps[j-1];
+            }
+        }
+        return ans;
+    }
+};
